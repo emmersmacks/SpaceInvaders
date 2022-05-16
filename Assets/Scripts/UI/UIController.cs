@@ -1,14 +1,18 @@
 using UnityEngine.UI;
 using UnityEngine;
 
-public class UIController : MonoBehaviour
+namespace SpaceInvaders.UI.Controllers
 {
-    [SerializeField] protected Text scoreField;
-
-    protected const string scoreFieldTextForm = "Score: ";
-
-    public void UpdateScoreTextField(int scoreNumber)
+    public class UIController : MonoBehaviour
     {
-        scoreField.text = scoreFieldTextForm + scoreNumber.ToString();
+        [SerializeField] protected Text scoreField;
+
+        protected const string scoreFieldTextForm = "Score: ";
+
+        public void UpdateScoreTextField(int scoreNumber)
+        {
+            scoreField.text = scoreFieldTextForm + scoreNumber.ToString();
+        }
     }
 }
+

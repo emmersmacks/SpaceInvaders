@@ -2,11 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using SpaceInvaders.Data.Controllers;
 
-
-public class MenuUIConroller : UIController
+namespace SpaceInvaders.UI.Controllers
 {
-    protected void Start()
+    public class MenuUIConroller : UIController
     {
-        UpdateScoreTextField(DataLoader.GetScoreNumber());
+        protected void Start()
+        {
+            UpdateScoreTextField(DataLoader.GetScoreNumber());
+        }
     }
 }
+

@@ -1,26 +1,29 @@
-using System;
 using UnityEngine;
-using System.Threading.Tasks;
+using SpaceInvaders.Game.Units.Enemy;
 
-public class PlayerController : IUnit
+namespace SpaceInvaders.Game.Units.Player
 {
-    [SerializeField] private float _speed;
-
-    private void FixedUpdate()
+    public class PlayerController : IUnit
     {
-        float directionHorizontal = Input.GetAxis("Horizontal");
-        float directionVertical = Input.GetAxis("Vertical");
+        [SerializeField] private float _speed;
 
-        var direction = new Vector2(directionHorizontal, directionVertical);
-        transform.Translate(direction * _speed * Time.fixedDeltaTime);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.transform.GetComponent<EnemyController>())
+        private void FixedUpdate()
         {
-            IsDamage();
-            Destroy(collision.gameObject);
+            float directionHorizontal = Input.GetAxis("Horizontal");
+            float directionVertical = Input.GetAxis("Vertical");
+
+            var direction = new Vector2(directionHorizontal, directionVertical);
+            transform.Translate(direction * _speed * Time.fixedDeltaTime);
+        }
+
+        private void OnCollisionEnter2D(Collision2D collision)
+        {
+            if (collision.transform.GetComponent<EnemyController>())
+            {
+                IsDamage();
+                Destroy(collision.gameObject);
+            }
         }
     }
 }
+

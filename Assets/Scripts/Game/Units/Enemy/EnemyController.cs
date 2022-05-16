@@ -1,40 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
+using SpaceInvaders.Game.Bullets;
+using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
-public class EnemyController : IUnit
+namespace SpaceInvaders.Game.Units.Enemy
 {
-    [SerializeField] private GameObject bullet;
-    [SerializeField] private GameObject buster;
-
-    private void Start()
+    public class EnemyController : IUnit
     {
-        IsDamage += OnDamage;
-        IsHit += OnHit;
-    }
+        [SerializeField] private GameObject _bullet;
+        [SerializeField] private GameObject _buster;
+        [SerializeField] private Sprite _deadSprite;
 
-    private void OnHit()
-    {
+        private AudioSource _audioSource;
+        private SpriteRenderer _spriteRenderer;
 
-    }
-
-    public void Fire()
-    {
-        var bulletInstance = Instantiate(bullet, transform.position, Quaternion.identity);
-        bulletInstance.GetComponent<Bullet>().senderScript = this;
-        bulletInstance.GetComponent<Bullet>()._directionMove = new Vector2(0, -1);
-    }
-
-    public void SpawnBuster()
-    {
-        if (Random.Range(0, 2) == 1)
+        private void Start()
         {
-            Instantiate(buster, transform.position, Quaternion.identity);
+            IsDamage += OnDamage;
+            IsHit += OnHit;
+            _audioSource = GetComponent<AudioSource>();
+            _spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        }
+
+        private void OnHit()
+        {
+
+        }
+
+        public void Fire()
+        {
+            var bulletInstance = Instantiate(_bullet, transform.position, Quaternion.identity);
+            var bulletScript = bulletInstance.GetComponent<Bullet>();
+            bulletScript.senderScript = this;
+            bulletScript.directionMove = new Vector2(0, -1);
+            bulletScript.IsDestroy += OnActionDestroy;
+        }
+        private async void OnDamage()
+        {
+            SpawnBuster();
+            _spriteRenderer.sprite = _deadSprite;
+            await PlayDeadSound();
+            Destroy(gameObject);
+        }
+
+        private async UniTask PlayDeadSound()
+        {
+            _audioSource.Play();
+            var audioTime = (int)(_audioSource.clip.length * 1000);
+            await Task.Delay(audioTime);
+        }
+
+        public void SpawnBuster()
+        {
+            if (Random.Range(0, 2) == 1)
+            {
+                Instantiate(_buster, transform.position, Quaternion.identity);
+            }
+        }
+        private void OnActionDestroy()
+        {
         }
     }
-
-    private void OnDamage()
-    {
-        Destroy(gameObject);
-    }
 }
+

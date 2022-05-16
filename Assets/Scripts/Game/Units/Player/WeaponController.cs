@@ -1,51 +1,63 @@
+using SpaceInvaders.Game.Boosters;
+using SpaceInvaders.Game.Bullets;
 using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
-public class WeaponController : MonoBehaviour
+namespace SpaceInvaders.Game.Units.Player
 {
-    [SerializeField] private GameObject _defoltBullet;
-
-    private bool _inRecharge;
-    private GameObject _currentBullet;
-
-    private void Start()
+    public class WeaponController : MonoBehaviour
     {
-        _currentBullet = _defoltBullet;
-        _inRecharge = false;
-    }
+        [SerializeField] private GameObject _defoltBullet;
 
-    private void Update()
-    {
-        if (Input.GetButtonDown("Fire1") && !_inRecharge)
+        private bool _inRecharge;
+        private GameObject _currentBullet;
+
+        private void Start()
         {
-            _inRecharge = true;
-            var instantiateBullet = Instantiate(_currentBullet, transform.position, Quaternion.identity);
+            _currentBullet = _defoltBullet;
+            _inRecharge = false;
+        }
+
+        private void Update()
+        {
+            if (Input.GetButtonDown("Fire1") && !_inRecharge)
+            {
+                _inRecharge = true;
+                ShotBullet();
+            }
+        }
+
+        private void ShotBullet()
+        {
+            var instantiateBullet = Instantiate(_currentBullet, transform.position, Quaternion.Euler(0,0,180));
             var bulletScript = instantiateBullet.GetComponent<Bullet>();
             bulletScript.senderScript = GetComponent<PlayerController>();
-            bulletScript._directionMove = new Vector2(0, 1);
+            bulletScript.directionMove = new Vector2(0, -1);
             bulletScript.IsDestroy += RechargeEnd;
         }
-    }
 
-    private void RechargeEnd()
-    {
-        _inRecharge = false;
-    }
-
-    private async void WeaponBusterStart(DefoltBuster buster)
-    {
-        _currentBullet = buster.bullet;
-        await Task.Delay(buster.actionTimeInMilliseconds);
-        _currentBullet = _defoltBullet;
-    }
-
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.transform.GetComponent<DefoltBuster>())
+        private async UniTask WeaponBusterStart(DefaultBooster buster)
         {
-            var buster = collision.transform.GetComponent<DefoltBuster>();
-            WeaponBusterStart(buster);
-            Destroy(collision.gameObject);
+            _currentBullet = buster.bullet;
+            await Task.Delay(buster.actionTimeInMilliseconds);
+            _currentBullet = _defoltBullet;
+        }
+
+        private async void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.transform.GetComponent<DefaultBooster>())
+            {
+                var buster = collision.transform.GetComponent<DefaultBooster>();
+                await WeaponBusterStart(buster);
+                Destroy(collision.gameObject);
+            }
+        }
+
+        private void RechargeEnd()
+        {
+            _inRecharge = false;
         }
     }
 }
+

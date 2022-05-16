@@ -2,25 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GenerationController : MonoBehaviour
+namespace SpaceInvaders.Game.Level.Generate
 {
-    [SerializeField] private GameObject _swarmObjectPrefab;
-
-    private GameObject _currentSwarmObject;
-
-    private void Start()
+    public class GenerationController : MonoBehaviour
     {
-        SpawnNewSwarmObject();
-    }
+        [SerializeField] private GameObject _swarmObjectPrefab;
 
-    private void Update()
-    {
-        if(_currentSwarmObject.transform.childCount == 0)
+        private GameObject _currentSwarmObject;
+
+        private void Start()
+        {
             SpawnNewSwarmObject();
-    }
+        }
 
-    public void SpawnNewSwarmObject()
-    {
-        _currentSwarmObject = Instantiate(_swarmObjectPrefab, transform.position, Quaternion.identity);
+        private void Update()
+        {
+            if (_currentSwarmObject.transform.childCount == 0)
+                SpawnNewSwarmObject();
+        }
+
+        public void SpawnNewSwarmObject()
+        {
+            _currentSwarmObject = Instantiate(_swarmObjectPrefab, transform.position, Quaternion.identity);
+        }
     }
 }
+

@@ -1,25 +1,22 @@
-using System.Collections;
-using System.Collections.Generic;
+using SpaceInvaders.Game.Units;
 using UnityEngine;
 
-public class LongStrikeBullet : Bullet
+namespace SpaceInvaders.Game.Bullets
 {
-    private int hitCount = 3;
-
-    private void Start()
+    public class LongStrikeBullet : Bullet
     {
-        base.Start();
-        _directionMove = new Vector2(0, 1);
-    }
+        private int _hitCount = 3;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        base.OnTriggerEnter2D(collision);
-        if (collision.transform.GetComponent<IUnit>().GetType().Name != senderScript.GetType().Name)
+        private void OnTriggerEnter2D(Collider2D collision)
         {
-            hitCount--;
-            if (hitCount == 0)
-                DestroyBullet();
+            base.OnTriggerEnter2D(collision);
+            if (collision.transform.GetComponent<IUnit>().GetType().Name != senderScript.GetType().Name)
+            {
+                _hitCount--;
+                if (_hitCount == 0)
+                    DestroyBullet();
+            }
         }
     }
 }
+

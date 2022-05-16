@@ -1,30 +1,36 @@
 using UnityEngine.UI;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
-public class GameUIController : UIController
+namespace SpaceInvaders.UI.Controllers
 {
-    [SerializeField] private GameObject _gameOverWindow;
-    [SerializeField] private Text _gameOverScoreText;
-    [SerializeField] private GameObject _livesPanel;
-
-    public void ShowGameOverWindow()
+    public class GameUIController : UIController
     {
-        _gameOverWindow.SetActive(true);
-        Time.timeScale = 0;
-    }
+        [SerializeField] private GameObject _gameOverWindow;
+        [SerializeField] private Text _gameOverScoreText;
+        [SerializeField] private GameObject _livesPanel;
 
-    public void DestroyOneHeart()
-    {
-        Destroy(_livesPanel.transform.GetChild(0).gameObject);
-    }
+        public async UniTask ShowGameOverWindow()
+        {
+            _gameOverWindow.SetActive(true);
+            await UIAnimations.WindowShowAnimation(_gameOverWindow);
+            Time.timeScale = 0;
+        }
 
-    public void SetGameOverScore(string score)
-    {
-        _gameOverScoreText.text = scoreFieldTextForm + score;
-    }
+        public void DestroyOneHeart()
+        {
+            Destroy(_livesPanel.transform.GetChild(0).gameObject);
+        }
 
-    public int GetCurrentLives()
-    {
-        return _livesPanel.transform.childCount;
+        public void SetGameOverScore(string score)
+        {
+            _gameOverScoreText.text = scoreFieldTextForm + score;
+        }
+
+        public int GetCurrentLives()
+        {
+            return _livesPanel.transform.childCount;
+        }
     }
 }
+

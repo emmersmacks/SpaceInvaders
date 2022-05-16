@@ -4,22 +4,24 @@ namespace SpaceInvaders.Data.Controllers
 {
     public static class DataLoader
     {
-        private const string scoreKey = "score";
+        private const string _scoreKey = "score";
 
-        public static void SaveScoreNumber(int number)
+        public static void SetScoreNumber(int number)
         {
-            PlayerPrefs.SetInt(scoreKey, number);
+            PlayerPrefs.SetInt(_scoreKey, number);
         }
 
         public static int GetScoreNumber()
         {
-            Debug.Log(PlayerPrefs.HasKey(scoreKey));
-            int score = 0;
-            if (PlayerPrefs.HasKey(scoreKey))
-                score = PlayerPrefs.GetInt(scoreKey);
-            else
-                PlayerPrefs.SetInt(scoreKey, 0);
+            CheckAvailability();
+            var score = PlayerPrefs.GetInt(_scoreKey);
             return score;
+        }
+
+        private static void CheckAvailability()
+        {
+            if (!PlayerPrefs.HasKey(_scoreKey))
+                PlayerPrefs.SetInt(_scoreKey, 0);
         }
     }
 }

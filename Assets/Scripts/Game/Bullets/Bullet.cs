@@ -1,55 +1,55 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using System;
+using SpaceInvaders.Game.Units;
+using Cysharp.Threading.Tasks;
 
-public class Bullet : MonoBehaviour
+namespace SpaceInvaders.Game.Bullets
 {
-    [SerializeField] protected float _speed;
-
-    public Vector2 _directionMove;
-    public IUnit senderScript;
-    public Action IsDestroy = default;
-
-    protected const int _timeToDestroyInMillisecond = 1500;
-    
-    protected void Start()
+    public class Bullet : MonoBehaviour
     {
-        StartDestroyTimer();
-        IsDestroy += OnActionDestroy;
-    }
+        [SerializeField] protected float _speed;
 
-    private void FixedUpdate()
-    {
-        if(transform != null)
-            transform.Translate(_directionMove * _speed * Time.fixedDeltaTime);
-    }
+        public Vector2 directionMove;
+        public IUnit senderScript;
+        public Action IsDestroy = default;
 
-    protected void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.transform.GetComponent<IUnit>().GetType().Name != senderScript.GetType().Name)
+        protected const int _timeToDestroyInMillisecond = 1200;
+
+        protected async void Start()
         {
-            collision.transform.GetComponent<IUnit>().IsDamage();
-            senderScript.IsHit();
+            await StartDestroyTimer();
         }
-    }
 
-    protected async void StartDestroyTimer()
-    {
-        await Task.Delay(_timeToDestroyInMillisecond);
-        DestroyBullet();
-    }
-
-    protected void DestroyBullet()
-    {
-        if (gameObject != null)
+        private void FixedUpdate()
         {
-            IsDestroy();
-            Destroy(gameObject);
+            if (transform != null)
+                transform.Translate(directionMove * _speed * Time.fixedDeltaTime);
         }
-    }
 
-    private void OnActionDestroy()
-    {
+        protected void OnTriggerEnter2D(Collider2D collision)
+        {
+            if (collision.transform.GetComponent<IUnit>().GetType().Name != senderScript.GetType().Name)
+            {
+                collision.transform.GetComponent<IUnit>().IsDamage();
+                senderScript.IsHit();
+            }
+        }
 
+        protected async UniTask StartDestroyTimer()
+        {
+            await Task.Delay(_timeToDestroyInMillisecond);
+            DestroyBullet();
+        }
+
+        protected void DestroyBullet()
+        {
+            if (gameObject != null)
+            {
+                IsDestroy();
+                Destroy(gameObject);
+            }
+        }
     }
 }
+
